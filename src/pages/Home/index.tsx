@@ -43,9 +43,12 @@ function Home() {
       </form>
 
       <ul className="email-list">
-        {emailsList.map((item) => (
+        {/* {emailsList.map((item) => (
           <li key={item.id}>{item.email}</li>
-        ))}
+        ))} */}
+        <li>dey</li>
+        <li>prithwish</li>
+        <li>abir</li>
       </ul>
     </div>
   );
