@@ -33,9 +33,11 @@ function Home() {
       <form onSubmit={handleSubmit}>
         <input
           type="email"
+          name="email"
           placeholder="Enter email"
           value={email}
           onChange={handleInputChange}
+          required
         />
         <button type="submit">Add Email</button>
       </form>
