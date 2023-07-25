@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './css/Home.css';
+import ListView from '../../components/listView';
+import { isValidEmail } from '../../utils/helper';
 
 interface Email {
   id: string;
@@ -16,7 +18,7 @@ function Home() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email.trim() !== '') {
+    if (email.trim() !== '' && isValidEmail(email)) {
       const newEmail: Email = {
         id: Date.now().toString(),
         email,
@@ -42,14 +44,7 @@ function Home() {
         <button type="submit">Add Email</button>
       </form>
 
-      <ul className="email-list">
-        {/* {emailsList.map((item) => (
-          <li key={item.id}>{item.email}</li>
-        ))} */}
-        <li>dey</li>
-        <li>prithwish</li>
-        <li>abir</li>
-      </ul>
+      <ListView list={emailsList} />
     </div>
   );
 }

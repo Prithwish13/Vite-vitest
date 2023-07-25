@@ -1,0 +1,11 @@
+.email-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.email-list li {
+  padding: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+}

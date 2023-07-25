@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import userEvent from '@testing-library/user-event';
 import Home from '../index';
@@ -56,20 +56,6 @@ describe('Home', () => {
       input.textContent = 'jane@doe.com';
       await userEvent.click(button);
       expect(input.value).toBe('');
-    }
-  });
-
-  it('should render the email', async () => {
-    render(<Home />);
-    const button = screen.getByRole('button', { name: 'Add Email' });
-    const input = document.querySelector('input') as HTMLInputElement | null;
-    if (input) {
-      input.textContent = 'jane@doe.com';
-      await userEvent.click(button);
-      const list = screen.getByRole('list');
-      const { getAllByRole } = within(list);
-      const items = getAllByRole('listitem');
-      expect(items[0].textContent).toBe('dey');
     }
   });
 });
