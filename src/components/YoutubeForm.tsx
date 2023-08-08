@@ -1,16 +1,59 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/jsx-props-no-spreading */
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 
 interface FormValues {
   username: string;
   email: string;
   channel: string;
+  social: {
+    facebook: string;
+    twitter: string;
+  };
+  phoneNumbers: string[];
+  phNumbers: {
+    number: string;
+  }[];
 }
 
 export default function YouTubeForm() {
-  const { register, control, handleSubmit, formState } = useForm<FormValues>();
+  const { register, control, handleSubmit, formState } = useForm<FormValues>({
+    // we can do also async call here
+
+    // defaultValues: async () => {
+    //   const response = await fetch(
+    //     'https://jsonplaceholder.typicode.com/users/1'
+    //   );
+    //   const data = await response.json();
+    //   return {
+    //     username: data.username,
+    //     email: data.email,
+    //     channel: data.website,
+    //   };
+    // },
+
+    defaultValues: {
+      email: '',
+      username: '',
+      channel: '',
+      social: {
+        twitter: '',
+        facebook: '',
+      },
+      phoneNumbers: ['', ''],
+      phNumbers: [
+        {
+          number: '',
+        },
+      ],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    name: 'phNumbers',
+    control,
+  });
   const { errors } = formState;
 
   const onSubmit = (data: FormValues) => {
@@ -84,8 +127,55 @@ export default function YouTubeForm() {
           />
           <p className="error">{errors.channel?.message}</p>
         </div>
-
-        <button>Submit</button>
+        <div className="form-control">
+          <label htmlFor="twitter">Twitter</label>
+          <input type="text" id="twitter" {...register('social.twitter')} />
+        </div>
+        <div className="form-control">
+          <label htmlFor="facebook">Facebook</label>
+          <input type="text" id="facebook" {...register('social.facebook')} />
+        </div>
+        <div className="form-control">
+          <label htmlFor="primary-phone">Primary Phone Number</label>
+          <input
+            type="text"
+            id="primary-phone"
+            {...register('phoneNumbers.0')}
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="secondary-phone">Secondary Phone Number</label>
+          <input
+            type="text"
+            id="secondary-phone"
+            {...register('phoneNumbers.1')}
+          />
+        </div>
+        <div>
+          <label>List of phone numbers</label>
+          <div>
+            {fields.map((field, index) => {
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={field.id} className="form-control">
+                  <input
+                    type="text"
+                    {...register(`phNumbers.${index}.number` as const)}
+                  />
+                  {index > 0 && (
+                    <button type="button" onClick={() => remove(index)}>
+                      remove
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <button type="button" onClick={() => append({ number: '' })}>
+              add
+            </button>
+          </div>
+        </div>
+        <button type="submit">Submit</button>
       </form>
       <DevTool control={control} />
     </div>
