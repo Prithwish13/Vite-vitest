@@ -3,6 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useForm, useFieldArray } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
+import { useEffect } from 'react';
 
 interface FormValues {
   username: string;
@@ -16,10 +17,21 @@ interface FormValues {
   phNumbers: {
     number: string;
   }[];
+  age: number;
+  dob: Date;
 }
 
 export default function YouTubeForm() {
-  const { register, control, handleSubmit, formState } = useForm<FormValues>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    getValues,
+    setValue,
+    watch,
+    reset,
+  } = useForm<FormValues>({
     // we can do also async call here
 
     // defaultValues: async () => {
@@ -48,17 +60,37 @@ export default function YouTubeForm() {
           number: '',
         },
       ],
+      age: 0,
+      dob: new Date(),
     },
   });
   const { fields, append, remove } = useFieldArray({
     name: 'phNumbers',
     control,
   });
-  const { errors } = formState;
+  const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
+    formState;
 
   const onSubmit = (data: FormValues) => {
     console.log('form submitted', data);
   };
+
+  const handleGetValues = () => {
+    console.log(getValues());
+  };
+
+  const handleSetValue = () => {
+    setValue('username', 'Prithwish Dey', {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <div>
@@ -108,6 +140,13 @@ export default function YouTubeForm() {
                     'this is restricted domain'
                   );
                 },
+                emailAvailable: async (fieldValue) => {
+                  const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users?email=${fieldValue}`
+                  );
+                  const data = await response.json();
+                  return data.length === 0 || 'this email is already exists';
+                },
               },
             })}
           />
@@ -140,7 +179,10 @@ export default function YouTubeForm() {
           <input
             type="text"
             id="primary-phone"
-            {...register('phoneNumbers.0')}
+            {...(register('phoneNumbers.0'),
+            {
+              disabled: watch('channel') === '',
+            })}
           />
         </div>
         <div className="form-control">
@@ -175,7 +217,49 @@ export default function YouTubeForm() {
             </button>
           </div>
         </div>
-        <button type="submit">Submit</button>
+        <div className="form-control">
+          <label htmlFor="age">Age</label>
+          <input
+            type="number"
+            id="age"
+            {...register('age', {
+              valueAsNumber: true,
+              required: {
+                value: true,
+                message: 'Age is required',
+              },
+            })}
+          />
+        </div>
+        {/* <div className="form-control">
+          <label htmlFor="dob">Date of birth</label>
+          <input
+            type="datetime-local"
+            id="dob"
+            {...register('dob', {
+              validate: (inputField) => {
+                const isDateValid = !Number.isNaN(
+                  new Date(inputField).valueOf()
+                );
+
+                return !isDateValid || 'Please enter a valid date time';
+              },
+              required: {
+                value: true,
+                message: 'date of birth is required',
+              },
+            })}
+          />
+        </div> */}
+        <button disabled={isSubmitting} type="submit">
+          Submit
+        </button>
+        <button type="button" onClick={handleGetValues}>
+          Get Values
+        </button>
+        <button type="button" onClick={handleSetValue}>
+          Set Value
+        </button>
       </form>
       <DevTool control={control} />
     </div>
