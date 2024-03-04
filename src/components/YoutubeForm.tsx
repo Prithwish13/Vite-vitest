@@ -21,6 +21,7 @@ interface FormValues {
   dob: Date;
 }
 
+
 export default function YouTubeForm() {
   const {
     register,
@@ -31,6 +32,7 @@ export default function YouTubeForm() {
     setValue,
     watch,
     reset,
+    trigger,
   } = useForm<FormValues>({
     // we can do also async call here
 
@@ -63,6 +65,7 @@ export default function YouTubeForm() {
       age: 0,
       dob: new Date(),
     },
+    mode: 'onBlur',
   });
   const { fields, append, remove } = useFieldArray({
     name: 'phNumbers',
@@ -256,6 +259,9 @@ export default function YouTubeForm() {
         </button>
         <button type="button" onClick={handleGetValues}>
           Get Values
+        </button>
+        <button type="button" onClick={() => trigger('channel')}>
+          Triggered Validation
         </button>
         <button type="button" onClick={handleSetValue}>
           Set Value
