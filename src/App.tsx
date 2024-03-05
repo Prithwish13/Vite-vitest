@@ -3,11 +3,12 @@ import NotFoundPage from './pages/NotFoundPage';
 import './app.css';
 import YouTubeForm from './components/YoutubeForm';
 import LoginForm from './components/LoginForm';
+import RecipeForm from './components/RecipeForm';
 
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<LoginForm />} />
+      <Route path="/" element={<RecipeForm />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
